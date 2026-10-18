@@ -1,0 +1,66 @@
+name: CI - Multiplatform SIMD Test & Benchmark
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test-x86_64:
+    name: Test x86_64 (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-13]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-gnu
+
+      - name: Build tensor-simd-core (Baseline)
+        run: cargo build --verbose
+
+      - name: Run Unit Tests & SIMD Accuracy Verification
+        run: cargo test --verbose
+
+      - name: Build with AVX2/FMA target features
+        if: runner.os == 'Linux'
+        env:
+          RUSTFLAGS: "-C target-cpu=haswell"
+        run: cargo test --release --test simd_accuracy
+
+      - name: Run GEMM Benchmarks
+        run: cargo test --release --test gemm_benchmark -- --nocapture
+
+  test-aarch64-neon:
+    name: Test aarch64 ARM NEON (macos-latest)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build and Test on Apple Silicon NEON
+        run: cargo test --release --verbose -- --nocapture
+
+  clippy-and-fmt:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - name: Check Formatting
+        run: cargo fmt --all -- --check
+      - name: Run Clippy Linter
+        run: cargo clippy --all-targets -- -D warnings

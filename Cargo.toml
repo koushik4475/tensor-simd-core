@@ -1,0 +1,42 @@
+[package]
+name = "tensor-simd-core"
+version = "0.1.0"
+edition = "2021"
+authors = ["koushik4475 <koushik4475@gmail.com>"]
+description = "Cross-Platform High-Performance Matrix & Tensor Math Engine in Rust/C++ SIMD with AVX-512, AVX2, and ARM NEON acceleration"
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/ER-brocode/tensor-simd-core"
+readme = "README.md"
+keywords = ["simd", "tensor", "gemm", "matrix", "avx512"]
+categories = ["science", "mathematics", "hardware-support"]
+
+[dependencies]
+thiserror = "1.0"
+num-traits = "0.2"
+
+[dev-dependencies]
+approx = "0.5"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+
+[profile.bench]
+opt-level = 3
+lto = "fat"
+debug = false
+
+[features]
+default = ["std"]
+std = []
+nightly-avx512 = []
+
+[[test]]
+name = "simd_accuracy"
+path = "tests/simd_accuracy.rs"
+
+[[test]]
+name = "gemm_benchmark"
+path = "tests/gemm_benchmark.rs"
