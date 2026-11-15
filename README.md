@@ -1,4 +1,7 @@
-# ? tensor-simd-core
+# Tensor SIMD Core | Cross-Platform SIMD Tensor and Matrix Computation Engine
+
+Tensor SIMD Core is a low-level tensor-computation project focused on matrix operations, multidimensional slicing, broadcasting, and numerical kernels. The README describes hardware-specific acceleration paths including AVX2, AVX-512, and ARM NEON, alongside benchmark and correctness tests. It is relevant to systems programmers exploring SIMD, numerical computing, and portable CPU tensor operations; compare results only under documented hardware and compiler settings.
+
 
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=2,14,26&height=220&section=header&text=tensor-simd-core&fontSize=50&fontAlignY=38&desc=Cross-Platform%20High-Performance%20Tensor%20Engine%20(AVX-512%20/%20AVX2%20/%20ARM%20NEON)&descAlignY=58&descSize=18&animation=twinkling" width="100%" alt="Header" />
